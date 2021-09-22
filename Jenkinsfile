@@ -30,15 +30,15 @@ pipeline {
             }
         }
 
-        stage('Deploy to Prod') {
-            agent { label 'builder' }
-            input { message:'Approve deployment?' }
-            steps {
-                dir("argocd-demo-deploy") {
-                    sh "cd ./prod && kustomize edit set image pacordonnier/pacordonnierdemocicd:${env.GIT_COMMIT}"
-                    sh "git commit -am 'Publish new version' && git push || echo 'no changes'"
-                }
-            }
-        }
+        // stage('Deploy to Prod') {
+        //     agent { label 'builder' }
+        //     input { message:'Approve deployment?' }
+        //     steps {
+        //         dir("argocd-demo-deploy") {
+        //             sh "cd ./prod && kustomize edit set image pacordonnier/pacordonnierdemocicd:${env.GIT_COMMIT}"
+        //             sh "git commit -am 'Publish new version' && git push || echo 'no changes'"
+        //         }
+        //     }
+        // }
     }
 }
