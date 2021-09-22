@@ -10,9 +10,6 @@ pipeline {
         //}
         stage('Build') {
             agent { label 'builder' }
-            environment {
-                DOCKERHUB_CREDS = credentials('dockerhub')
-            }
             steps {
                 // Build new image
                 sh "until docker ps; do sleep 3; done && docker build -t pacordonnier/pacordonnierdemocicd:${env.GIT_COMMIT} ."
@@ -23,9 +20,6 @@ pipeline {
 
         stage('Deploy E2E') {
             agent { label 'builder' }
-            environment {
-                GIT_CREDS = credentials('git')
-            }
             steps {
                 sh "git clone git@github.com:PACordonnier/demo-cicd-ops.git"
                 
@@ -37,14 +31,12 @@ pipeline {
         }
 
         stage('Deploy to Prod') {
+            agent { label 'builder' }
+            input message:'Approve deployment?'
             steps {
-                agent { label 'builder' }
-                input message:'Approve deployment?'
-                container('tools') {
                 dir("argocd-demo-deploy") {
                     sh "cd ./prod && kustomize edit set image pacordonnier/pacordonnierdemocicd:${env.GIT_COMMIT}"
                     sh "git commit -am 'Publish new version' && git push || echo 'no changes'"
-                }
                 }
             }
         }
