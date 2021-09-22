@@ -21,6 +21,7 @@ pipeline {
         stage('Deploy E2E') {
             agent { label 'builder' }
             steps {
+                sh "rm -rf demo-cicd-ops"
                 sh "git clone git@github.com:PACordonnier/demo-cicd-ops.git"
                 
                 dir("demo-cicd-ops") {
