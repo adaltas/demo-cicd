@@ -2,24 +2,24 @@
 pipeline {
     agent none
     stages {
-        stage('Test') {
-            agent { docker { image 'node:14-alpine' } }
-            steps {
-                sh 'yarn test'
-            }
-        }
-        //stage('Build') {
-        //    agent { label 'builder' }
-        //    environment {
-        //        DOCKERHUB_CREDS = credentials('dockerhub')
-        //    }
+        //stage('Test') {
+        //    agent { docker { image 'node:14-alpine' } }
         //    steps {
-        //        // Build new image
-        //        sh "until docker ps; do sleep 3; done && docker build -t pacordonnier/pacordonnierdemocicd:${env.GIT_COMMIT} ."
-        //        // Publish new image
-        //        sh "docker push pacordonnier/pacordonnierdemocicd:${env.GIT_COMMIT}"
+        //        sh 'yarn test'
         //    }
         //}
+        stage('Build') {
+            agent { label 'builder' }
+            environment {
+                DOCKERHUB_CREDS = credentials('dockerhub')
+            }
+            steps {
+                // Build new image
+                sh "until docker ps; do sleep 3; done && docker build -t pacordonnier/pacordonnierdemocicd:${env.GIT_COMMIT} ."
+                // Publish new image
+                sh "docker push pacordonnier/pacordonnierdemocicd:${env.GIT_COMMIT}"
+            }
+        }
 
         stage('Deploy E2E') {
             agent { label 'builder' }
