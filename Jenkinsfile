@@ -23,7 +23,7 @@ pipeline {
             steps {
                 sh "git clone git@github.com:PACordonnier/demo-cicd-ops.git"
                 
-                dir("argocd-demo-deploy") {
+                dir("demo-cicd-ops") {
                     sh "cd ./dev && kustomize edit set image pacordonnier/pacordonnierdemocicd:${env.GIT_COMMIT}"
                     sh "git commit -am 'Publish new version' && git push || echo 'no changes'"
                 }
