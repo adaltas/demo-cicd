@@ -33,7 +33,7 @@ pipeline {
 
         stage('Deploy to Prod') {
             agent { label 'builder' }
-            input { message:'Approve deployment?' }
+            input { message 'Approve deployment?' }
             steps {
                 dir("demo-cicd-ops") {
                     sh "cd ./prod && kustomize edit set image pacordonnier/pacordonnierdemocicd:${env.GIT_COMMIT}"
