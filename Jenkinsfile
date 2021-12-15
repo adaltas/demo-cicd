@@ -12,9 +12,9 @@ pipeline {
             agent { label 'builder' }
             steps {
                 // Build new image
-                sh "until docker ps; do sleep 3; done && docker build -t pacordonnier/pacordonnierdemocicd:${env.GIT_COMMIT} ."
+                sh "until docker ps; do sleep 3; done && docker build -t adaltas/adaltasdemocicd:${env.GIT_COMMIT} ."
                 // Publish new image
-                sh "docker push pacordonnier/pacordonnierdemocicd:${env.GIT_COMMIT}"
+                sh "docker push adaltas/adaltasdemocicd:${env.GIT_COMMIT}"
             }
         }
 
@@ -22,10 +22,10 @@ pipeline {
             agent { label 'builder' }
             steps {
                 sh "rm -rf demo-cicd-ops"
-                sh "git clone git@github.com:PACordonnier/demo-cicd-ops.git"
+                sh "git clone git@github.com:adaltas/demo-cicd-ops.git"
                 
                 dir("demo-cicd-ops") {
-                    sh "cd ./dev && kustomize edit set image pacordonnier/pacordonnierdemocicd:${env.GIT_COMMIT}"
+                    sh "cd ./dev && kustomize edit set image adaltas/adaltasdemocicd:${env.GIT_COMMIT}"
                     sh "git commit -am 'Publish new version' && git push || echo 'no changes'"
                 }
             }
@@ -36,7 +36,7 @@ pipeline {
             input { message 'Approve deployment?' }
             steps {
                 dir("demo-cicd-ops") {
-                    sh "cd ./prod && kustomize edit set image pacordonnier/pacordonnierdemocicd:${env.GIT_COMMIT}"
+                    sh "cd ./prod && kustomize edit set image adaltas/adaltasdemocicd:${env.GIT_COMMIT}"
                     sh "git commit -am 'Publish new version' && git push || echo 'no changes'"
                 }
             }
